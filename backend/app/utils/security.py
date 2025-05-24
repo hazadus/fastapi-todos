@@ -1,6 +1,12 @@
 """Содержит функции для работы с хэшами паролей."""
 
+from datetime import datetime, timedelta, timezone
+
+import jwt
 from passlib.context import CryptContext
+
+from app.core.config import settings
+from app.core.constants import AUTH_ALGORITHM
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -38,3 +44,32 @@ def hash_password(
     """
 
     return pwd_context.hash(plaintext)
+
+
+def create_access_token(
+    *,
+    email: str,
+) -> str:
+    """
+    Создаёт токен аутентификации (JWT) для пользователя с указанным email.
+
+    Args:
+        email (str): Email пользователя, для которого создаётся токен.
+    Returns:
+        str: Закодированный JWT токен.
+    """
+    now = datetime.now(timezone.utc)
+    exp = now + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    data = {
+        "sub": email,
+        "iat": int(now.timestamp()),
+        "exp": int(exp.timestamp()),
+    }
+
+    encoded_jwt = jwt.encode(
+        data,
+        settings.AUTH_SECRET_KEY,
+        algorithm=AUTH_ALGORITHM,
+    )
+
+    return encoded_jwt

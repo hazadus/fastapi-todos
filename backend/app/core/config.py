@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     APP_VERSION: str = Field("0.0.1")
     PROJECT_NAME: str = Field("Todos Backend")
 
+    AUTH_SECRET_KEY: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(1440)
+
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str

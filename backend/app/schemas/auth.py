@@ -46,3 +46,31 @@ class SignupResponseSchema(BaseModel):
         default="Пользователь успешно зарегистрирован.",
         description="Сообщение об успешной регистрации.",
     )
+
+
+class LoginRequestSchema(BaseModel):
+    """Схема для запроса входа пользователя."""
+
+    email: EmailStr = Field(
+        description="Email, принадлежащий пользователю.",
+    )
+    password: str = Field(
+        min_length=8,
+        max_length=128,
+        description="Пароль пользователя.",
+    )
+
+
+class LoginResponseSchema(BaseModel):
+    """Схема для ответа с информацией о вошедшем пользователе."""
+
+    user: UserResponseSchema = Field(
+        description="Информация о вошедшем пользователе.",
+    )
+    access_token: str = Field(
+        description="JWT токен для доступа к защищённым ресурсам.",
+    )
+    token_type: str = Field(
+        default="Bearer",
+        description="Тип токена, обычно 'Bearer'.",
+    )
