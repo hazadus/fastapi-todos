@@ -34,6 +34,7 @@ async def create_user(
                 "password_hash": hash_password(plaintext=user_data.password),
             },
         )
+        await session.commit()
     except IntegrityError as ex:
         raise EmailAlreadyExistsException from ex
 

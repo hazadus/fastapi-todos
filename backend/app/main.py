@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 
+from app.api.v1.auth import router as auth_router
 from app.core.config import settings
 from app.schemas import HealthcheckResponseSchema
 
@@ -25,6 +26,11 @@ app.add_middleware(
         "PUT",
     ],
 )
+
+for router in [
+    auth_router,
+]:
+    app.include_router(router=router, prefix="/api/v1")
 
 logfire.configure(
     send_to_logfire="if-token-present",
