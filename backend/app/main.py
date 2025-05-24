@@ -5,6 +5,7 @@ from fastapi.responses import HTMLResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.api.v1.auth import router as auth_router
+from app.api.v1.tasks import router as tasks_router
 from app.core.config import settings
 from app.schemas import HealthcheckResponseSchema
 
@@ -29,6 +30,7 @@ app.add_middleware(
 
 for router in [
     auth_router,
+    tasks_router,
 ]:
     app.include_router(router=router, prefix="/api/v1")
 

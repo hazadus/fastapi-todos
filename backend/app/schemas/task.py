@@ -73,3 +73,14 @@ class TaskResponseSchema(BaseModel):
 
     # Для конвертирования моделей SQLAlchemy в Pydantic
     model_config = ConfigDict(from_attributes=True)
+
+
+class TaskListResponseSchema(BaseModel):
+    """Схема для ответа со списком задач."""
+
+    tasks: list[TaskResponseSchema] = Field(
+        description="Список задач текущего пользователя",
+    )
+    total: int = Field(
+        description="Общее количество задач текущего пользователя",
+    )
