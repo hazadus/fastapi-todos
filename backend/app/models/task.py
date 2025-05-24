@@ -26,7 +26,7 @@ class TaskModel(BaseModel):
         nullable=False,
         comment="Заголовок задачи",
     )
-    description: Mapped[str] = mapped_column(
+    description: Mapped[str | None] = mapped_column(
         sa.Text,
         nullable=True,
         comment="Описание задачи",
