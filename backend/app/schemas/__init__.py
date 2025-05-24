@@ -5,6 +5,7 @@ from app.schemas.auth import (
     SignupResponseSchema,
 )
 from app.schemas.healthcheck import HealthcheckResponseSchema
+from app.schemas.task import TaskCreateSchema, TaskResponseSchema, TaskUpdateSchema
 from app.schemas.user import UserCreateSchema, UserResponseSchema, UserUpdateSchema
 
 __all__ = [
@@ -16,4 +17,7 @@ __all__ = [
     "SignupResponseSchema",
     "LoginRequestSchema",
     "LoginResponseSchema",
+    "TaskCreateSchema",
+    "TaskResponseSchema",
+    "TaskUpdateSchema",
 ]

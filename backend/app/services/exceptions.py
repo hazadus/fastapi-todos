@@ -12,3 +12,14 @@ class EmailAlreadyExistsException(CustomException):
         msg: str = "Пользователь с указанным email уже существует",
     ):
         super().__init__(msg=msg)
+
+
+class TaskCreationException(CustomException):
+    """Ошибка при создании задачи."""
+
+    def __init__(
+        self,
+        *,
+        msg: str = "Произошла ошибка при создании задачи",
+    ):
+        super().__init__(msg=msg)
