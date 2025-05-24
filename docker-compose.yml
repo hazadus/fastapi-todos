@@ -24,6 +24,10 @@ services:
       - 8000:8000
     volumes:
       - ./backend/app/:/app/app/
+      - ./backend/migrations/versions/:/app/migrations/versions/
+    depends_on:
+      postgres-dev:
+        condition: service_healthy
     networks:
       - dev
 
