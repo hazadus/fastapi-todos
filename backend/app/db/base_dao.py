@@ -1,13 +1,14 @@
 from typing import Any, Generic, TypeVar
 
-from app.models import BaseModel
-from pydantic import BaseModel
+from pydantic import BaseModel as PydanticBaseModel
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-ModelType = TypeVar("ModelType", bound=BaseModel)
-CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
-UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
+from app.models import BaseModel as SQLAlchemyBaseModel
+
+ModelType = TypeVar("ModelType", bound=SQLAlchemyBaseModel)
+CreateSchemaType = TypeVar("CreateSchemaType", bound=PydanticBaseModel)
+UpdateSchemaType = TypeVar("UpdateSchemaType", bound=PydanticBaseModel)
 
 
 class BaseDAO(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
