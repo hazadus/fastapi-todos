@@ -14,6 +14,19 @@ class UserCreateSchema(BaseModel):
     )
 
 
+class UserUpdateSchema(BaseModel):
+    """Схема для обновления информации о пользователе."""
+
+    email: EmailStr | None = Field(
+        default=None,
+        description="Email, принадлежащий пользователю.",
+    )
+    password: str | None = Field(
+        default=None,
+        description="Пароль пользователя",
+    )
+
+
 class UserResponseSchema(BaseModel):
     """Схема для ответа с информацией о пользователе."""
 

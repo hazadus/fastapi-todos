@@ -126,7 +126,7 @@ class BaseDAO(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             update(cls.model).where(*where).values(**update_data).returning(cls.model)
         )
         result = await session.execute(stmt)
-        return result.scalars().one()
+        return result.scalars().one_or_none()
 
     # MARK: Delete
     @classmethod
