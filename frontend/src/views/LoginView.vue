@@ -6,6 +6,11 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth";
 
+// Редирект на главную страницу, если пользователь уже авторизован
+if (useAuthStore().isAuthenticated) {
+  useRouter().push("/");
+}
+
 const email = ref("");
 const password = ref("");
 const errorMessage = ref("");

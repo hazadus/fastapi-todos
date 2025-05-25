@@ -1,4 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+/*
+ * Компонент главной страницы приложения
+ */
+import { useAuthStore } from "../stores/auth";
+const authStore = useAuthStore();
+</script>
 
 <template>
   <div class="min-h-[calc(100vh-6rem)] flex items-center justify-center">
@@ -12,7 +18,10 @@
         </p>
       </div>
 
-      <div class="space-y-4">
+      <div
+        v-if="!authStore.isAuthenticated"
+        class="space-y-4"
+      >
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <router-link
             to="/login"
