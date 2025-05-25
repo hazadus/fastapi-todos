@@ -15,9 +15,12 @@ app = FastAPI(
     docs_url="/docs",
 )
 
+# TODO: при подготовке к запуску приложения в production
+# настраивать origins в соответствии с адресами фронтенда
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_headers=["*"],
     allow_methods=[
         "GET",
         "POST",

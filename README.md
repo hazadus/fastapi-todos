@@ -11,10 +11,11 @@ git clone https://github.com/hazadus/fastapi-todos
 cd fastapi-todos
 ```
 
-- Создать файл с настройками бэкенда
+- Создать файлы с настройками бэкенда и фронтенда
 
 ```bash
 cp backend/.env.example backend/.env.dev
+cp frontend/.env.example frontend/.env.dev
 ```
 
 - Запустить проект в Docker
@@ -40,3 +41,8 @@ docker exec app-dev alembic revision --message="Add_some_new_table" --autogenera
 # Для применения миграций:
 docker exec app-dev alembic upgrade head
 ```
+
+## Документация 
+
+- [Pinia](https://pinia.vuejs.org/)
+- [VueUse](https://vueuse.org)
