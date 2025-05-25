@@ -19,6 +19,7 @@ const isEditingDescription = ref(false);
 const editTitle = ref(props.task.title);
 const editDescription = ref(props.task.description || "");
 const isUpdating = ref(false);
+const isDeleting = ref(false);
 
 // Форматирование даты
 const formatDate = (dateString: string): string => {
@@ -37,6 +38,7 @@ const taskClasses = computed(() => ({
   "opacity-60": props.task.is_completed,
   "border-green-200 bg-green-50": props.task.is_completed,
   "border-gray-200 bg-white": !props.task.is_completed,
+  "animate-pulse": isDeleting.value,
 }));
 
 const titleClasses = computed(() => ({
@@ -59,10 +61,15 @@ const deleteTask = async (): Promise<void> => {
     return;
   }
 
+  isDeleting.value = true;
+
   try {
+    // Небольшая задержка для показа анимации
+    await new Promise((resolve) => setTimeout(resolve, 200));
     await tasksStore.deleteTask(props.task.id);
   } catch (error) {
     console.error("Ошибка при удалении задачи:", error);
+    isDeleting.value = false;
   }
 };
 
@@ -177,7 +184,7 @@ const handleDescriptionKeydown = (event: KeyboardEvent): void => {
 
 <template>
   <div
-    class="border rounded-lg p-4 shadow-sm transition-all duration-200 hover:shadow-md"
+    class="border rounded-lg p-4 shadow-sm transition-all duration-300 hover:shadow-md relative"
     :class="taskClasses"
   >
     <!-- Заголовок задачи -->
@@ -188,8 +195,8 @@ const handleDescriptionKeydown = (event: KeyboardEvent): void => {
           type="checkbox"
           :checked="task.is_completed"
           @change="toggleCompletion"
-          :disabled="tasksStore.isLoading || isUpdating"
-          class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded disabled:cursor-not-allowed"
+          :disabled="tasksStore.isLoading || isUpdating || isDeleting"
+          class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded disabled:cursor-not-allowed transition-all duration-200"
         />
       </label>
 
@@ -200,7 +207,7 @@ const handleDescriptionKeydown = (event: KeyboardEvent): void => {
           v-if="!isEditingTitle"
           @click="startEditingTitle"
           :class="titleClasses"
-          class="text-lg font-medium cursor-pointer hover:bg-gray-50 rounded px-2 py-1 -mx-2 -my-1 transition-colors"
+          class="text-lg font-medium cursor-pointer hover:bg-gray-50 rounded px-2 py-1 -mx-2 -my-1 transition-all duration-200"
           :title="task.is_completed ? '' : 'Нажмите для редактирования'"
         >
           {{ task.title }}
@@ -216,21 +223,21 @@ const handleDescriptionKeydown = (event: KeyboardEvent): void => {
             @keydown="handleTitleKeydown"
             @blur="saveTitle"
             type="text"
-            class="flex-1 text-lg font-medium border border-indigo-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="flex-1 text-lg font-medium border border-indigo-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
             maxlength="255"
             autofocus
           />
           <button
             @click="saveTitle"
             :disabled="isUpdating"
-            class="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-400 text-sm"
+            class="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-400 text-sm transition-all duration-200"
           >
             <i class="fas fa-check"></i>
           </button>
           <button
             @click="cancelEditTitle"
             :disabled="isUpdating"
-            class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:bg-gray-400 text-sm"
+            class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:bg-gray-400 text-sm transition-all duration-200"
           >
             <i class="fas fa-times"></i>
           </button>
@@ -240,11 +247,14 @@ const handleDescriptionKeydown = (event: KeyboardEvent): void => {
       <!-- Кнопка удаления -->
       <button
         @click="deleteTask"
-        :disabled="tasksStore.isLoading || isUpdating"
-        class="p-2 text-red-600 hover:bg-red-50 rounded focus:outline-none focus:ring-2 focus:ring-red-500 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+        :disabled="tasksStore.isLoading || isUpdating || isDeleting"
+        class="p-2 text-red-600 hover:bg-red-50 rounded focus:outline-none focus:ring-2 focus:ring-red-500 disabled:text-gray-400 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105"
         title="Удалить задачу"
       >
-        <i class="fas fa-trash text-sm"></i>
+        <i
+          :class="isDeleting ? 'fas fa-spinner fa-spin' : 'fas fa-trash'"
+          class="text-sm"
+        ></i>
       </button>
     </div>
 
@@ -258,7 +268,7 @@ const handleDescriptionKeydown = (event: KeyboardEvent): void => {
         v-if="!isEditingDescription && task.description"
         @click="startEditingDescription"
         :class="{ 'line-through text-gray-400': task.is_completed }"
-        class="text-gray-600 cursor-pointer hover:bg-gray-50 rounded px-2 py-1 -mx-2 -my-1 transition-colors whitespace-pre-wrap"
+        class="text-gray-600 cursor-pointer hover:bg-gray-50 rounded px-2 py-1 -mx-2 -my-1 transition-all duration-200 whitespace-pre-wrap"
         :title="task.is_completed ? '' : 'Нажмите для редактирования'"
       >
         {{ task.description }}
@@ -273,7 +283,7 @@ const handleDescriptionKeydown = (event: KeyboardEvent): void => {
           v-model="editDescription"
           @keydown="handleDescriptionKeydown"
           rows="3"
-          class="w-full text-gray-600 border border-indigo-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+          class="w-full text-gray-600 border border-indigo-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none transition-all duration-200"
           maxlength="5000"
           placeholder="Введите описание задачи"
           autofocus
@@ -284,7 +294,7 @@ const handleDescriptionKeydown = (event: KeyboardEvent): void => {
             <button
               @click="saveDescription"
               :disabled="isUpdating"
-              class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-400 text-sm"
+              class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-400 text-sm transition-all duration-200"
             >
               <i class="fas fa-check mr-1"></i>
               Сохранить
@@ -292,7 +302,7 @@ const handleDescriptionKeydown = (event: KeyboardEvent): void => {
             <button
               @click="cancelEditDescription"
               :disabled="isUpdating"
-              class="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:bg-gray-400 text-sm"
+              class="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:bg-gray-400 text-sm transition-all duration-200"
             >
               <i class="fas fa-times mr-1"></i>
               Отмена
@@ -313,7 +323,7 @@ const handleDescriptionKeydown = (event: KeyboardEvent): void => {
     >
       <button
         @click="startEditingDescription"
-        class="text-gray-400 hover:text-gray-600 text-sm italic hover:bg-gray-50 rounded px-2 py-1 -mx-2 -my-1 transition-colors"
+        class="text-gray-400 hover:text-gray-600 text-sm italic hover:bg-gray-50 rounded px-2 py-1 -mx-2 -my-1 transition-all duration-200"
       >
         <i class="fas fa-plus mr-1"></i>
         Добавить описание
@@ -340,14 +350,14 @@ const handleDescriptionKeydown = (event: KeyboardEvent): void => {
       <div class="flex items-center">
         <span
           v-if="task.is_completed"
-          class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+          class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 transition-all duration-200"
         >
           <i class="fas fa-check mr-1"></i>
           Выполнено
         </span>
         <span
           v-else
-          class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"
+          class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 transition-all duration-200"
         >
           <i class="fas fa-clock mr-1"></i>
           В процессе
@@ -386,5 +396,20 @@ input[type="checkbox"]:checked {
 input:focus,
 textarea:focus {
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Анимация удаления */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 1s ease-in-out infinite;
 }
 </style>

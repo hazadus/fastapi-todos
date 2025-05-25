@@ -82,7 +82,7 @@ const toggleSortOrder = () => {
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-semibold text-gray-900">
           <i class="fas fa-list-ul text-indigo-600 mr-2"></i>
-          <span class="hidden md:flex">Мои задачи</span>
+          <span class="hidden md:inline">Мои задачи</span>
         </h2>
 
         <!-- Статистика -->
@@ -259,9 +259,11 @@ const toggleSortOrder = () => {
         </p>
       </div>
 
-      <!-- Список задач -->
-      <div
+      <!-- Список задач с анимацией -->
+      <TransitionGroup
         v-if="filteredTasks.length > 0"
+        name="task"
+        tag="div"
         class="space-y-4"
       >
         <TaskItem
@@ -269,7 +271,7 @@ const toggleSortOrder = () => {
           :key="task.id"
           :task="task"
         />
-      </div>
+      </TransitionGroup>
     </div>
 
     <!-- Футер со сводкой -->
@@ -301,3 +303,35 @@ const toggleSortOrder = () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Анимации для задач */
+.task-enter-active {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.task-leave-active {
+  transition: all 0.4s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.task-enter-from {
+  opacity: 0;
+  transform: translateY(-30px) scale(0.95);
+}
+
+.task-leave-to {
+  opacity: 0;
+  transform: translateX(50px) scale(0.9);
+}
+
+.task-move {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Дополнительные стили для плавной анимации */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+</style>
