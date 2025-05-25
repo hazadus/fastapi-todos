@@ -140,7 +140,10 @@ async def update_task(
         session,
         TaskDAO.model.id == task_id,
         TaskDAO.model.user_id == user_id,
-        obj_in=task_data,
+        obj_in=task_data.model_dump(
+            exclude_unset=True,
+            exclude_none=True,
+        ),
     )
 
     if not db_task:

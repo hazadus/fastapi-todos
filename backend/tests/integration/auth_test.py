@@ -1,32 +1,10 @@
-import pytest
-import pytest_asyncio
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.auth import router as auth_router
 from app.models import UserModel
 from app.schemas import UserCreateSchema
-from app.services import create_user
 from tests.integration.conftest import BaseTestRouter
-
-
-@pytest.fixture()
-def user_data() -> UserCreateSchema:
-    return UserCreateSchema(
-        email="user@example.com",
-        password="my_s3cure_p@ssw0rd",
-    )
-
-
-@pytest_asyncio.fixture(scope="function")
-async def user(
-    session: AsyncSession,
-    user_data: UserCreateSchema,
-) -> UserModel:
-    return await create_user(
-        session=session,
-        user_data=user_data,
-    )
 
 
 class TestAuthRouter(BaseTestRouter):
