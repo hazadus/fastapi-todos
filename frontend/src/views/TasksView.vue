@@ -4,6 +4,7 @@
  */
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
+import TaskForm from "../components/TaskForm.vue";
 import { useAuthStore } from "../stores/auth";
 import { useTasksStore } from "../stores/tasks";
 
@@ -23,5 +24,8 @@ onMounted(async () => {
 
 <template>
   <div v-if="tasksStore.isLoading">Загрузка...</div>
-  <pre v-else>{{ tasksStore.tasks }}</pre>
+  <template v-else>
+    <TaskForm />
+    <pre>{{ tasksStore.tasks }}</pre>
+  </template>
 </template>
