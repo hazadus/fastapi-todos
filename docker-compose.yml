@@ -31,6 +31,21 @@ services:
     networks:
       - dev
 
+  front-dev:
+    container_name: front-dev
+    profiles: ["dev"]
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    command: ["npm", "run", "dev"]
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/src/:/app/src/
+      - ./frontend/public/:/app/public/
+    networks:
+      - dev
+
   postgres-dev:
     profiles: ["dev"]
     <<: *postgres-base

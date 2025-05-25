@@ -1,8 +1,6 @@
-<script setup lang="ts">
-</script>
-
+<script setup lang="ts"></script>
 
 <template>
-    <div>Главная страница</div>
+  <div>Главная страница</div>
 </template>
 <style scoped></style>
