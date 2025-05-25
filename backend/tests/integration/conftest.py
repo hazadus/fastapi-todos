@@ -8,7 +8,9 @@ from app.main import app as the_app
 
 
 @pytest_asyncio.fixture(scope="function")
-async def client():
+async def client(session: AsyncSession):
+    # Подменяем зависимость get_session на нашу тестовую сессию
+    the_app.dependency_overrides[get_session] = lambda: session
     transport = ASGITransport(app=the_app)
     async with AsyncClient(transport=transport, base_url="http://test") as async_client:
         yield async_client
