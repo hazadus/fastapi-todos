@@ -8,7 +8,10 @@ authStore.loadUserFromStorage();
 </script>
 
 <template>
-  <div id="app">
+  <div
+    id="app"
+    class="max-w-7xl mx-auto"
+  >
     <Header />
     <main class="p-4">
       <router-view />
