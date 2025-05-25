@@ -61,6 +61,33 @@ services:
     networks:
       - dev
 
+  # MARK: TEST
+  app-test:
+    profiles: ["test"]
+    build:
+      context: ./backend
+      args:
+        ENV: test
+    env_file: "./backend/.env.test"
+    command: sh -c "
+      alembic upgrade head &&
+      coverage run --source='.' -m pytest -s --rootdir=/app/ --disable-pytest-warnings &&
+      coverage html -d /htmlcov"
+    volumes:
+      - ./backend/htmlcov:/htmlcov
+    depends_on:
+      - postgres-test
+    networks:
+      - test
+
+  postgres-test:
+    profiles: ["test"]
+    <<: *postgres-base
+    env_file: "./backend/.env.test"
+    networks:
+      - test
+
 #MARK: Networks
 networks:
   dev:
+  test:
