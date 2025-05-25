@@ -82,28 +82,28 @@ const toggleSortOrder = () => {
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-semibold text-gray-900">
           <i class="fas fa-list-ul text-indigo-600 mr-2"></i>
-          Мои задачи
+          <span class="hidden md:flex">Мои задачи</span>
         </h2>
 
         <!-- Статистика -->
         <div class="flex items-center space-x-4 text-sm text-gray-600">
           <span class="flex items-center">
             <i class="fas fa-tasks mr-1"></i>
-            Всего: {{ stats.total }}
+            <span class="hidden md:flex">Всего:</span> {{ stats.total }}
           </span>
           <span class="flex items-center text-yellow-600">
             <i class="fas fa-clock mr-1"></i>
-            В процессе: {{ stats.pending }}
+            <span class="hidden md:flex">В процессе:</span> {{ stats.pending }}
           </span>
           <span class="flex items-center text-green-600">
             <i class="fas fa-check-circle mr-1"></i>
-            Выполнено: {{ stats.completed }}
+            <span class="hidden md:flex">Выполнено:</span> {{ stats.completed }}
           </span>
         </div>
       </div>
 
       <!-- Фильтры и сортировка -->
-      <div class="flex items-center justify-between">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
         <!-- Фильтры -->
         <div class="flex space-x-1">
           <button
@@ -115,7 +115,7 @@ const toggleSortOrder = () => {
             class="px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             <i class="fas fa-list mr-1"></i>
-            Все задачи
+            Все <span class="hidden md:inline">задачи</span>
           </button>
 
           <button
@@ -127,7 +127,7 @@ const toggleSortOrder = () => {
             class="px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             <i class="fas fa-clock mr-1"></i>
-            В процессе ({{ stats.pending }})
+            <span class="hidden md:inline">В процессе</span> ({{ stats.pending }})
           </button>
 
           <button
@@ -139,7 +139,7 @@ const toggleSortOrder = () => {
             class="px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             <i class="fas fa-check-circle mr-1"></i>
-            Выполнено ({{ stats.completed }})
+            <span class="hidden md:inline">Выполнено</span> ({{ stats.completed }})
           </button>
         </div>
 

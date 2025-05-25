@@ -19,7 +19,7 @@ const onLogout = async () => {
     <nav class="flex items-center justify-between">
       <div class="flex items-center space-x-2">
         <i class="fas fa-tasks text-xl"></i>
-        <h1>Список задач</h1>
+        <h1 class="hidden md:flex">Список задач</h1>
       </div>
       <div class="flex-1 flex justify-center">
         <ul class="flex space-x-4">
