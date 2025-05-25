@@ -11,16 +11,45 @@ const tasksStore = useTasksStore();
 // Фильтры для задач
 const filter = ref<"all" | "pending" | "completed">("all");
 
+// Сортировка
+const sortBy = ref<"created_at" | "status">("created_at");
+const sortOrder = ref<"asc" | "desc">("desc");
+
 // Вычисляемые списки задач
 const filteredTasks = computed(() => {
+  let tasks;
   switch (filter.value) {
     case "pending":
-      return tasksStore.pendingTasks;
+      tasks = tasksStore.pendingTasks;
+      break;
     case "completed":
-      return tasksStore.completedTasks;
+      tasks = tasksStore.completedTasks;
+      break;
     default:
-      return tasksStore.tasks;
+      tasks = tasksStore.tasks;
   }
+
+  // Сортировка
+  const sortedTasks = [...tasks].sort((a, b) => {
+    let comparison = 0;
+
+    if (sortBy.value === "created_at") {
+      const dateA = new Date(a.created_at);
+      const dateB = new Date(b.created_at);
+      comparison = dateA.getTime() - dateB.getTime();
+    } else if (sortBy.value === "status") {
+      // Сортировка по статусу: pending (false) идет первым, completed (true) - вторым
+      // Number(false) = 0, Number(true) = 1
+      comparison = Number(a.is_completed) - Number(b.is_completed);
+    }
+
+    // Возвращаемое значение:
+    // - Отрицательное число - a должно быть перед b
+    // - Положительное число - b должно быть перед a
+    return sortOrder.value === "asc" ? comparison : -comparison;
+  });
+
+  return sortedTasks;
 });
 
 // Статистика
@@ -33,6 +62,16 @@ const stats = computed(() => ({
 // Смена фильтра
 const setFilter = (newFilter: "all" | "pending" | "completed") => {
   filter.value = newFilter;
+};
+
+// Смена сортировки
+const setSortBy = (newSortBy: "created_at" | "status") => {
+  sortBy.value = newSortBy;
+};
+
+// Переключение направления сортировки
+const toggleSortOrder = () => {
+  sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
 };
 </script>
 
@@ -63,43 +102,93 @@ const setFilter = (newFilter: "all" | "pending" | "completed") => {
         </div>
       </div>
 
-      <!-- Фильтры -->
-      <div class="flex space-x-1">
-        <button
-          @click="setFilter('all')"
-          :class="{
-            'bg-indigo-600 text-white': filter === 'all',
-            'bg-gray-100 text-gray-700 hover:bg-gray-200': filter !== 'all',
-          }"
-          class="px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        >
-          <i class="fas fa-list mr-1"></i>
-          Все задачи
-        </button>
+      <!-- Фильтры и сортировка -->
+      <div class="flex items-center justify-between">
+        <!-- Фильтры -->
+        <div class="flex space-x-1">
+          <button
+            @click="setFilter('all')"
+            :class="{
+              'bg-indigo-600 text-white': filter === 'all',
+              'bg-gray-100 text-gray-700 hover:bg-gray-200': filter !== 'all',
+            }"
+            class="px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            <i class="fas fa-list mr-1"></i>
+            Все задачи
+          </button>
 
-        <button
-          @click="setFilter('pending')"
-          :class="{
-            'bg-indigo-600 text-white': filter === 'pending',
-            'bg-gray-100 text-gray-700 hover:bg-gray-200': filter !== 'pending',
-          }"
-          class="px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        >
-          <i class="fas fa-clock mr-1"></i>
-          В процессе ({{ stats.pending }})
-        </button>
+          <button
+            @click="setFilter('pending')"
+            :class="{
+              'bg-indigo-600 text-white': filter === 'pending',
+              'bg-gray-100 text-gray-700 hover:bg-gray-200': filter !== 'pending',
+            }"
+            class="px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            <i class="fas fa-clock mr-1"></i>
+            В процессе ({{ stats.pending }})
+          </button>
 
-        <button
-          @click="setFilter('completed')"
-          :class="{
-            'bg-indigo-600 text-white': filter === 'completed',
-            'bg-gray-100 text-gray-700 hover:bg-gray-200': filter !== 'completed',
-          }"
-          class="px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        >
-          <i class="fas fa-check-circle mr-1"></i>
-          Выполнено ({{ stats.completed }})
-        </button>
+          <button
+            @click="setFilter('completed')"
+            :class="{
+              'bg-indigo-600 text-white': filter === 'completed',
+              'bg-gray-100 text-gray-700 hover:bg-gray-200': filter !== 'completed',
+            }"
+            class="px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            <i class="fas fa-check-circle mr-1"></i>
+            Выполнено ({{ stats.completed }})
+          </button>
+        </div>
+
+        <!-- Сортировка -->
+        <div class="flex items-center space-x-2">
+          <span class="text-sm text-gray-600">Сортировка:</span>
+
+          <!-- Выбор критерия сортировки -->
+          <div class="flex space-x-1">
+            <button
+              @click="setSortBy('created_at')"
+              :class="{
+                'bg-indigo-600 text-white': sortBy === 'created_at',
+                'bg-gray-100 text-gray-700 hover:bg-gray-200': sortBy !== 'created_at',
+              }"
+              class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              <i class="fas fa-calendar mr-1"></i>
+              По дате
+            </button>
+
+            <button
+              @click="setSortBy('status')"
+              :class="{
+                'bg-indigo-600 text-white': sortBy === 'status',
+                'bg-gray-100 text-gray-700 hover:bg-gray-200': sortBy !== 'status',
+              }"
+              class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              <i class="fas fa-flag mr-1"></i>
+              По статусу
+            </button>
+          </div>
+
+          <!-- Направление сортировки -->
+          <button
+            @click="toggleSortOrder"
+            class="p-1.5 rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            :title="sortOrder === 'asc' ? 'По возрастанию' : 'По убыванию'"
+          >
+            <i
+              :class="{
+                'fas fa-sort-up': sortOrder === 'asc',
+                'fas fa-sort-down': sortOrder === 'desc',
+              }"
+              class="text-sm"
+            ></i>
+          </button>
+        </div>
       </div>
     </div>
 
