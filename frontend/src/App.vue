@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import Header from "./components/Header.vue";
+import { useAuthStore } from "./stores/auth";
+
+// Загрузка пользователя из локального хранилища
+const authStore = useAuthStore();
+authStore.loadUserFromStorage();
 </script>
 
 <template>
