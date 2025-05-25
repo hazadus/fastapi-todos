@@ -3,7 +3,6 @@ from typing import AsyncGenerator
 
 import pytest
 import pytest_asyncio
-from app.core.config import settings
 from faker import Faker
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -12,6 +11,8 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.pool import NullPool
+
+from app.core.config import settings
 
 faker = Faker()
 

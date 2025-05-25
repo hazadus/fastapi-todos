@@ -1,9 +1,10 @@
 import pytest_asyncio
-from app.db.session import get_session
-from app.main import app as the_app
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.db.session import get_session
+from app.main import app as the_app
 
 
 @pytest_asyncio.fixture(scope="function")
