@@ -6,7 +6,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth";
 
-// Редирект на главную страницу, если пользователь уже авторизован
+// Редирект на главную страницу, если пользователь уже аутентифицирован
 if (useAuthStore().isAuthenticated) {
   useRouter().push("/");
 }
@@ -54,8 +54,8 @@ const handleSubmit = async () => {
       password: password.value,
     });
 
-    // Перенаправление на главную страницу при успешном входе
-    await router.push("/");
+    // Перенаправление на страницу задач при успешном входе
+    await router.push("/tasks");
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : "Произошла ошибка при входе";
   } finally {

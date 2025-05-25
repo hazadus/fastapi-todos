@@ -9,6 +9,12 @@ export const API_CONFIG = {
       SIGNUP: "/api/v1/auth/signup",
       ME: "/api/v1/auth/me",
     },
+    TASKS: {
+      LIST: "/api/v1/tasks",
+      CREATE: "/api/v1/tasks",
+      UPDATE: (id: number) => `/api/v1/tasks/${id}`,
+      DELETE: (id: number) => `/api/v1/tasks/${id}`,
+    },
   },
 } as const;
 

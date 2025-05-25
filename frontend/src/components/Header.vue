@@ -2,8 +2,16 @@
 /*
  * Компонент заголовка для приложения
  */
+import { useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth";
+
 const authStore = useAuthStore();
+const router = useRouter();
+
+const onLogout = async () => {
+  authStore.logout();
+  await router.push("/");
+};
 </script>
 
 <template>
@@ -15,16 +23,16 @@ const authStore = useAuthStore();
       </div>
       <div class="flex-1 flex justify-center">
         <ul class="flex space-x-4">
+          <li>
+            <router-link
+              to="/"
+              class="hover:underline"
+              active-class="text-yellow-300 font-semibold"
+              exact
+              >Главная</router-link
+            >
+          </li>
           <template v-if="!authStore.isAuthenticated">
-            <li>
-              <router-link
-                to="/"
-                class="hover:underline"
-                active-class="text-yellow-300 font-semibold"
-                exact
-                >Главная</router-link
-              >
-            </li>
             <li>
               <router-link
                 to="/signup"
@@ -45,7 +53,7 @@ const authStore = useAuthStore();
           <template v-else>
             <li>
               <router-link
-                to="/"
+                to="/tasks"
                 class="hover:underline"
                 active-class="text-yellow-300 font-semibold"
                 >Задачи</router-link
@@ -53,7 +61,7 @@ const authStore = useAuthStore();
             </li>
             <li>
               <button
-                @click="authStore.logout()"
+                @click="onLogout()"
                 class="hover:underline text-red-300"
               >
                 Выйти
