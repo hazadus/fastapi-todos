@@ -6,7 +6,7 @@ from app.db import get_session
 from app.models import UserModel
 from app.schemas import TaskCreateSchema, TaskListResponseSchema, TaskResponseSchema
 from app.services import create_task, get_user_tasks
-from app.services.exceptions import TaskCreationException
+from app.services.exceptions import TaskCreateException
 
 router = APIRouter(
     prefix="/tasks",
@@ -42,7 +42,7 @@ async def create_task_route(
             task_data=task_data,
             user_id=current_user.id,
         )
-    except TaskCreationException as ex:
+    except TaskCreateException as ex:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=ex.msg,
