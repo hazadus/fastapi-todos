@@ -61,6 +61,20 @@ services:
     networks:
       - dev
 
+  nginx-dev:
+    container_name: nginx-dev
+    image: nginx:alpine
+    profiles: ["dev"]
+    ports:
+      - 80:80
+    volumes:
+      - ./docker/nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - dev
+    depends_on:
+      - app-dev
+      - front-dev
+
   # MARK: TEST
   app-test:
     profiles: ["test"]
